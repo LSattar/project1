@@ -22,10 +22,11 @@ USE `taxtracker` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `taxtracker`.`employment_sector` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `employment_sector_name` VARCHAR(45) NOT NULL,
+  `employment_sector_name` VARCHAR(100) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `employment_sector_name_UNIQUE` (`employment_sector_name` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 69
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`client` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(45) NOT NULL,
   `last_name` VARCHAR(45) NOT NULL,
-  `ssn` VARCHAR(9) NOT NULL UNIQUE,
+  `ssn` VARCHAR(9) NOT NULL,
   `dob` DATE NOT NULL,
   `phone` VARCHAR(15) NOT NULL,
   `email` VARCHAR(100) NULL DEFAULT NULL,
@@ -47,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`client` (
   `state` VARCHAR(2) NOT NULL,
   `employment_sector_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `ssn` (`ssn` ASC) VISIBLE,
   INDEX `FK_client_employment_idx` (`employment_sector_id` ASC) VISIBLE,
   CONSTRAINT `FK_client_employment`
     FOREIGN KEY (`employment_sector_id`)
@@ -54,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`client` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 21
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -74,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`cpa` (
   `state` VARCHAR(2) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -83,10 +87,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `taxtracker`.`document_category` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `category_name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `category_name_UNIQUE` (`category_name` ASC) VISIBLE)
+  `document_type` VARCHAR(50) NULL DEFAULT NULL,
+  `document_description` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 33
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -102,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`tax_return` (
   `status` VARCHAR(45) NULL DEFAULT NULL,
   `amount_paid` DECIMAL(10,2) NULL DEFAULT NULL,
   `amount_owed` DECIMAL(10,2) NULL DEFAULT NULL,
-`cost` DECIMAL(10,2) NULL DEFAULT 200,
+  `cost` DECIMAL(10,2) NULL DEFAULT '200.00',
   `creation_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -117,6 +122,28 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`tax_return` (
     FOREIGN KEY (`cpa_id`)
     REFERENCES `taxtracker`.`cpa` (`id`)
     ON DELETE RESTRICT
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 21
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `taxtracker`.`payment`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `taxtracker`.`payment` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `date` DATE NOT NULL,
+  `return_id` INT NULL DEFAULT NULL,
+  `method` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_payment_return_idx` (`return_id` ASC) VISIBLE,
+  CONSTRAINT `FK_payment_return`
+    FOREIGN KEY (`return_id`)
+    REFERENCES `taxtracker`.`tax_return` (`id`)
+    ON DELETE SET NULL
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
