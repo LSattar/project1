@@ -26,4 +26,57 @@ public class Payment {
 	@Column(name = "method")
 	private String method;
 
+	public Payment() {
+		super();
+	}
+
+	public Payment(int id, int amount, LocalDate date, TaxReturn taxReturn, String method) {
+		super();
+		this.id = id;
+		this.amount = amount;
+		this.date = date;
+		this.taxReturn = taxReturn;
+		this.method = method;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public TaxReturn getTaxReturn() {
+		return taxReturn;
+	}
+
+	public void setTaxReturn(TaxReturn taxReturn) {
+		this.taxReturn = taxReturn;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
 }
