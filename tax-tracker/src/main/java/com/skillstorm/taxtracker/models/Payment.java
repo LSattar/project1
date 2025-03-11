@@ -20,7 +20,8 @@ public class Payment {
 	@Column(name = "date")
 	private LocalDate date;
 	
-	@Column(name = "return_id")
+	@ManyToOne
+	@JoinColumn(name = "return_id")
 	private TaxReturn taxReturn;
 	
 	@Column(name = "method")

@@ -13,9 +13,11 @@ public class TaxReturn {
 	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "client_id")
+	@ManyToOne
+	@JoinColumn(name = "client_id")
 	private Client client;
 	
+	@ManyToOne
 	@Column(name = "cpa_id")
 	private Cpa cpa;
 	

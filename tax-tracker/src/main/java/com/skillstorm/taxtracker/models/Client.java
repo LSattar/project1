@@ -42,7 +42,11 @@ public class Client {
 	@Column(name = "state")
 	private String state;
 	
-	@Column(name = "employment_sector_id")
+	@Column(name = "zip")
+	private String zip;
+	
+	@ManyToOne
+	@JoinColumn(name = "employment_sector_id")
 	private EmploymentSector employmentSector;
 
 	public Client() {
@@ -50,7 +54,7 @@ public class Client {
 	}
 
 	public Client(int id, String firstName, String lastName, String ssn, LocalDate dob, String phone, String address1,
-			String address2, String city, String state, EmploymentSector employmentSector) {
+			String address2, String city, String state, String zip, EmploymentSector employmentSector) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -62,6 +66,7 @@ public class Client {
 		this.address2 = address2;
 		this.city = city;
 		this.state = state;
+		this.zip = zip;
 		this.employmentSector = employmentSector;
 	}
 

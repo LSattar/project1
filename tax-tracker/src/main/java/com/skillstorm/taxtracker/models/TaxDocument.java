@@ -11,13 +11,16 @@ public class TaxDocument {
 	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "client_id")
+	@ManyToOne
+	@JoinColumn(name = "client_id")
 	private Client client;
 	
-	@Column(name = "tax_return_id")
+	@ManyToOne
+	@JoinColumn(name = "tax_return_id")
 	private TaxReturn taxReturn;
 	
-	@Column(name = "document_category_id")
+	@ManyToOne
+	@JoinColumn(name = "document_category_id")
 	private DocumentCategory documentCategory;
 
 	public TaxDocument() {

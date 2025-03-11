@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`client` (
   `address2` VARCHAR(100) NOT NULL,
   `city` VARCHAR(100) NOT NULL,
   `state` VARCHAR(2) NOT NULL,
+  `zip` VARCHAR(5) NOT NULL,
   `employment_sector_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `ssn` (`ssn` ASC) VISIBLE,
@@ -75,6 +76,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`cpa` (
   `address2` VARCHAR(100) NOT NULL,
   `city` VARCHAR(100) NOT NULL,
   `state` VARCHAR(2) NOT NULL,
+  `zip` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 11

@@ -37,13 +37,16 @@ public class Cpa {
 	
 	@Column(name = "state")
 	private String state;
+	
+	@Column(name = "zip")
+	private String zip;
 
 	public Cpa() {
 		super();
 	}
 
 	public Cpa(int id, String firstName, String lastName, String license, String phone, String address1,
-			String address2, String city, String state) {
+			String address2, String city, String state, String zip) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -54,6 +57,7 @@ public class Cpa {
 		this.address2 = address2;
 		this.city = city;
 		this.state = state;
+		this.zip = zip;
 	}
 
 	public int getId() {
