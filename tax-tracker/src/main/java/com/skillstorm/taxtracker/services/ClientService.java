@@ -4,15 +4,12 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.skillstorm.taxtracker.repositories.ClientRepository;
 import com.skillstorm.taxtracker.repositories.EmploymentSectorRepository;
 import com.skillstorm.taxtracker.dtos.ClientDTO;
@@ -62,13 +59,20 @@ public class ClientService {
         return clients.iterator().hasNext() ? ResponseEntity.ok(clients) 
                                             : ResponseEntity.noContent().build();
     }
+    
+    // Find client by SSN
+    public ResponseEntity<Client> findBySsn(String ssn) {
+        String hashedSSN = hashSSN(ssn); 
+        return repo.findByHashedSsn(hashedSSN)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     // Create client
     public ResponseEntity<Client> createClient(ClientDTO dto) {
         try {
             EmploymentSector employmentSector = employmentSectorRepo.findById(dto.employmentSector().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Employment sector not found with ID: " + dto.employmentSector().getId()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
             String hashedSsn = hashSSN(dto.ssn());
 
@@ -94,11 +98,10 @@ public class ClientService {
     public ResponseEntity<Client> updateClient(int id, ClientDTO dto) {
         try {
             Client existingClient = repo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
             EmploymentSector employmentSector = employmentSectorRepo.findById(dto.employmentSector().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Employment sector not found with ID: " + dto.employmentSector().getId()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
             String hashedSsn = existingClient.getHashedSsn();
             if (!dto.ssn().equals(existingClient.getSsn())) {

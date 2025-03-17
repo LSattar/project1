@@ -26,6 +26,12 @@ public class ClientController {
 	public ResponseEntity<Client> findClientById(@PathVariable int id) {
 		return service.findClientById(id);
 	}
+	
+	@GetMapping("by-ssn/{ssn}")
+	public ResponseEntity<Client> getClientBySSN(@PathVariable String ssn) {
+	    return service.findBySsn(ssn);
+	}
+
 
 	@PostMapping
 	public ResponseEntity<Client> createClient(@RequestBody ClientDTO dto) {

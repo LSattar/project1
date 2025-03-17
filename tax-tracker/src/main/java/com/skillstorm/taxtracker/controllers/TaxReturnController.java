@@ -27,6 +27,11 @@ public class TaxReturnController {
         return service.findByEmploymentSector(sectorId);
     }
     
+    @GetMapping("/cpa/{cpaId}")
+    public ResponseEntity<Iterable<TaxReturn>> findByCpa(@PathVariable Integer cpaId) {
+        return service.findByCpa(cpaId);
+    }
+    
 	@GetMapping("/{id}")
 	public ResponseEntity<TaxReturn> findTaxReturnById(@PathVariable int id) {
 		return service.findTaxReturnById(id);

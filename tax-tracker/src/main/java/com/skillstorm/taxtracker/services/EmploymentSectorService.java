@@ -99,7 +99,6 @@ public class EmploymentSectorService {
 			if (!repo.existsById(id)) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
-
 			if (clientRepo.existsByEmploymentSectorId(id)) {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			} else {
