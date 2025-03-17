@@ -56,7 +56,7 @@ public class TaxDocumentService {
 	public ResponseEntity<TaxDocument> updateTaxDocument(int id, TaxDocumentDTO dto) {
 		try {
 			if (repo.existsById(id))
-				return ResponseEntity.ok(repo.save(new TaxDocument(0,dto.client(),dto.taxReturn(),dto.documentCategory())));
+				return ResponseEntity.ok(repo.save(new TaxDocument(id,dto.client(),dto.taxReturn(),dto.documentCategory())));
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
@@ -66,8 +66,12 @@ public class TaxDocumentService {
 	// Delete document
 	public ResponseEntity<Void> deleteById(int id) {
 		try {
-			repo.deleteById(id);
-			return ResponseEntity.noContent().build();
+			if (repo.existsById(id)) {
+				repo.deleteById(id);
+				return ResponseEntity.noContent().build();
+			}
+			else
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
 		}

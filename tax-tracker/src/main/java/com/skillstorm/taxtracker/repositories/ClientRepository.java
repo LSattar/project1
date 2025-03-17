@@ -1,4 +1,6 @@
 package com.skillstorm.taxtracker.repositories;
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import com.skillstorm.taxtracker.models.Client;
@@ -7,5 +9,9 @@ import com.skillstorm.taxtracker.models.Client;
 public interface ClientRepository extends CrudRepository<Client, Integer> {
 
 	Iterable<Client> findByLastNameStartingWith(String startsWith);
+
+	boolean existsByEmploymentSectorId(int id);
+
+	Optional<Client> findByHashedSsn(String hashedSsn);
 	
 }

@@ -57,7 +57,7 @@ public class CpaService {
 	public ResponseEntity<Cpa> updateCpa(int id, CpaDTO dto) {
 		try {
 			if (repo.existsById(id))
-				return ResponseEntity.ok(repo.save(new Cpa(0, dto.firstName(), dto.lastName(), dto.license(),dto.phone(),
+				return ResponseEntity.ok(repo.save(new Cpa(id, dto.firstName(), dto.lastName(), dto.license(),dto.phone(),
 						dto.address1(), dto.address2(), dto.city(), dto.state(), dto.zip())));
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 		} catch (Exception e) {
@@ -68,8 +68,12 @@ public class CpaService {
 	// Delete CPA
 	public ResponseEntity<Void> deleteById(int id) {
 		try {
-			repo.deleteById(id);
-			return ResponseEntity.noContent().build();
+			if (repo.existsById(id)) {
+				repo.deleteById(id);
+				return ResponseEntity.noContent().build();
+			}
+			else
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		} catch (Exception e) {
 			return ResponseEntity.status(500).build();
 		}

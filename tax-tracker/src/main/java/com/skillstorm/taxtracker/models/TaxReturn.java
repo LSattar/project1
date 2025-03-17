@@ -18,7 +18,7 @@ public class TaxReturn {
 	private Client client;
 	
 	@ManyToOne
-	@Column(name = "cpa_id")
+	@JoinColumn(name = "cpa_id", nullable = true)
 	private Cpa cpa;
 	
 	@Column(name = "year")
@@ -36,16 +36,47 @@ public class TaxReturn {
 	@Column(name = "cost")
 	private int cost;
 	
-	@Column(name = "creation_date")
-	private LocalDate creationDate;
-	
-	@Column(name = "update_date")
-	private LocalDate updateDate;
+    @Column(name = "creation_date", updatable = false)
+    private LocalDate creationDate;
+
+    @Column(name = "update_date")
+    private LocalDate updateDate;
+    
+	@ManyToOne
+	@JoinColumn(name = "employment_sector_id", nullable = true)
+	private EmploymentSector employmentSector;
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateDate = LocalDate.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.creationDate = LocalDate.now();
+        this.updateDate = LocalDate.now();
+    }
 
 	public TaxReturn() {
 		super();
 	}
 
+	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, int amountOwed, int amountPaid, int cost,
+			LocalDate creationDate, LocalDate updateDate, EmploymentSector employmentSector) {
+		super();
+		this.id = id;
+		this.client = client;
+		this.cpa = cpa;
+		this.year = year;
+		this.status = status;
+		this.amountOwed = amountOwed;
+		this.amountPaid = amountPaid;
+		this.cost = cost;
+		this.creationDate = creationDate;
+		this.updateDate = updateDate;
+		this.employmentSector = employmentSector;
+	}
+	
 	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, int amountOwed, int amountPaid, int cost,
 			LocalDate creationDate, LocalDate updateDate) {
 		super();

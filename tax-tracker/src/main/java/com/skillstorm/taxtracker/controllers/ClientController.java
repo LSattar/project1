@@ -21,13 +21,18 @@ public class ClientController {
 	public ResponseEntity<Iterable<Client>> findAll(@RequestParam(required = false) String startsWith) {
 		return service.findAll(startsWith);
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Client> findClientById(@PathVariable int id) {
+		return service.findClientById(id);
+	}
 
 	@PostMapping
 	public ResponseEntity<Client> createClient(@RequestBody ClientDTO dto) {
 		return service.createClient(dto);
 	}
 
-	@PutMapping
+	@PutMapping("/{id}")
 	public ResponseEntity<Client> udpateClient(@PathVariable int id, @RequestBody ClientDTO dto) {
 		return service.updateClient(id, dto);
 	}
@@ -36,5 +41,15 @@ public class ClientController {
 	public ResponseEntity<Void> deleteById(@PathVariable int id) {
 		return service.deleteById(id);
 	}
+	
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Client> deactivateClient(@PathVariable int id) {
+        return service.deactivateClient(id);
+    }
+	
+    @PostMapping("/reactivate")
+    public ResponseEntity<Client> reactivateClient(@RequestParam String ssn, @RequestBody ClientDTO dto) {
+        return service.reactivateClient(ssn, dto);
+    }
 
 }

@@ -1,73 +1,166 @@
 package com.skillstorm.taxtracker.models;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.skillstorm.taxtracker.models.*;
-import java.time.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.*;
 
 @Entity
 @Table(name = "client")
 public class Client {
 
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private int id;
-	
-	@Column(name = "first_name")
-	private String firstName;
-	
-	@Column(name = "last_name")
-	private String lastName;
-	
-	@Column(name = "ssn")
-	private String ssn;
-	
-	@Column(name = "dob")
-	private LocalDate dob;
-	
-	@Column(name = "phone")
-	private String phone;
-	
-	@Column(name = "address1")
-	private String address1;
-	
-	@Column(name = "address2")
-	private String address2;
-	
-	@Column(name = "city")
-	private String city;
-	
-	@Column(name = "state")
-	private String state;
-	
-	@Column(name = "zip")
-	private String zip;
-	
-	@ManyToOne
-	@JoinColumn(name = "employment_sector_id")
-	private EmploymentSector employmentSector;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "ssn", unique = true, nullable = true) // Allow null if deactivated
+    private String ssn;
+
+    @Column(name = "hashed_ssn", unique = true, nullable = false)
+    private String hashedSsn;
+
+    @Column(name = "dob")
+    private LocalDate dob;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "address1")
+    private String address1;
+
+    @Column(name = "address2")
+    private String address2;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "zip")
+    private String zip;
+
+    @ManyToOne
+    @JoinColumn(name = "employment_sector_id")
+    private EmploymentSector employmentSector;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
 
 	public Client() {
-		super();
 	}
 
-	public Client(int id, String firstName, String lastName, String ssn, LocalDate dob, String phone, String address1,
-			String address2, String city, String state, String zip, EmploymentSector employmentSector) {
-		super();
+	public Client(int id, String firstName, String lastName, String ssn, LocalDate dob, String phone, String email,
+			String address1, String address2, String city, String state, String zip,
+			EmploymentSector employmentSector) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.ssn = ssn;
+		this.ssn = ssn; // Store plain SSN initially
+		this.hashedSsn = hashSSN(ssn); // Hash SSN for reactivation
 		this.dob = dob;
 		this.phone = phone;
+		this.email = email;
 		this.address1 = address1;
 		this.address2 = address2;
 		this.city = city;
 		this.state = state;
 		this.zip = zip;
 		this.employmentSector = employmentSector;
+		this.isActive = true;
+	}
+
+	public Client(int id, String firstName, String lastName, String ssn, String hashedSsn, LocalDate dob, String phone,
+			String email, String address1, String address2, String city, String state, String zip,
+			EmploymentSector employmentSector, boolean isActive) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.ssn = ssn;
+		this.hashedSsn = hashedSsn;
+		this.dob = dob;
+		this.phone = phone;
+		this.email = email;
+		this.address1 = address1;
+		this.address2 = address2;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.employmentSector = employmentSector;
+		this.isActive = isActive;
+	}
+
+    private String hashSSN(String ssn) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(ssn.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                hexString.append(String.format("%02x", b));
+            }
+            return hexString.toString(); // Always returns the same hash for the same SSN
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing SSN", e);
+        }
+    }
+
+	public void deactivateClient() {
+	    this.isActive = false;
+	    
+	    // Preserve hashed SSN for reactivation lookup
+	    String preservedHashedSSN = this.hashedSsn;
+	    
+	    this.firstName = null;
+	    this.lastName = null;
+	    this.ssn = null; // Remove plaintext SSN
+	    this.dob = null;
+	    this.phone = null;
+	    this.email = null;
+	    this.address1 = null;
+	    this.address2 = null;
+	    this.city = null;
+	    this.state = null;
+	    this.zip = null;
+
+	    // Reassign the hashed SSN to prevent it from being nulled
+	    this.hashedSsn = preservedHashedSSN;
+	}
+
+	public void reactivateClient(String firstName, String lastName, String ssn, LocalDate dob, String phone,
+			String email, String address1, String address2, String city, String state, String zip) {
+		this.isActive = true;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.ssn = ssn; // Restore plaintext SSN for tax filing
+		this.dob = dob;
+		this.phone = phone;
+		this.email = email;
+		this.address1 = address1;
+		this.address2 = address2;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+	}
+
+	public String getHashedSsn() {
+		return hashedSsn;
+	}
+
+	public boolean isActive() {
+		return isActive;
 	}
 
 	public int getId() {
@@ -157,5 +250,5 @@ public class Client {
 	public void setEmploymentSector(EmploymentSector employmentSector) {
 		this.employmentSector = employmentSector;
 	}
-	
+
 }

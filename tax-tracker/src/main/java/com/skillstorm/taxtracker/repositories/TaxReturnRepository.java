@@ -19,5 +19,8 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
              @Param("lastName") String lastName,
              @Param("employmentSectorId") Integer employmentSectorId,
              @Param("status") String status);
+    
+    @Query("SELECT t FROM TaxReturn t WHERE t.employmentSector.id = :employmentSectorId")
+    Iterable<TaxReturn> findByEmploymentSectorId(@Param("employmentSectorId") Integer employmentSectorId);
 	
 }
