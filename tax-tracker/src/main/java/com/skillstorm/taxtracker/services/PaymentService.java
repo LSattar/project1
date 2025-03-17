@@ -113,11 +113,10 @@ public class PaymentService {
 	
 	// Get balance for individual tax return
 	public ResponseEntity<BigDecimal> getTaxReturnBalance(int taxReturnId) {
-		
 	    if (!taxReturnRepo.existsById(taxReturnId)) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	    }
-		
+
 	    return taxReturnRepo.findById(taxReturnId)
 	            .map(taxReturn -> {
 	                BigDecimal totalPayments = repo.sumPaymentsByTaxReturnId(taxReturnId);
@@ -125,14 +124,14 @@ public class PaymentService {
 	                BigDecimal balance = taxReturn.getCost().subtract(totalPayments);
 	                return ResponseEntity.ok(balance);
 	            })
-	            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+	            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
 	
 	//Get balance for client
 	public ResponseEntity<BigDecimal> getClientBalance(int clientId) {
 	    if (!clientRepo.existsById(clientId)) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	    }
 
 	    Iterable<TaxReturn> taxReturns = taxReturnRepo.findByClientId(clientId);
@@ -142,13 +141,15 @@ public class PaymentService {
 
 	    BigDecimal totalBalance = BigDecimal.ZERO;
 	    for (TaxReturn taxReturn : taxReturns) {
-	        ResponseEntity<BigDecimal> taxReturnBalance = getTaxReturnBalance(taxReturn.getId());
-	        if (taxReturnBalance.getStatusCode().is2xxSuccessful()) {
-	            totalBalance = totalBalance.add(taxReturnBalance.getBody());
+	        ResponseEntity<BigDecimal> taxReturnBalanceResponse = getTaxReturnBalance(taxReturn.getId());
+
+	        if (taxReturnBalanceResponse.getStatusCode().is2xxSuccessful() && taxReturnBalanceResponse.getBody() != null) {
+	            totalBalance = totalBalance.add(taxReturnBalanceResponse.getBody());
 	        }
 	    }
 
 	    return ResponseEntity.ok(totalBalance);
 	}
+
 
 }

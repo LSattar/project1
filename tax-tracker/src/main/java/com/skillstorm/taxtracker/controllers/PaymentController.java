@@ -46,12 +46,12 @@ public class PaymentController {
 	
 	@GetMapping("/tax-return/{taxReturnId}/balance")
 	public ResponseEntity<BigDecimal> getTaxReturnBalance(@PathVariable int taxReturnId) {
-	    return ResponseEntity.ok(service.getTaxReturnBalance(taxReturnId));
+	    return service.getTaxReturnBalance(taxReturnId);
 	}
 	
 	@GetMapping("/client/{clientId}/balance")
 	public ResponseEntity<BigDecimal> getClientBalance(@PathVariable int clientId) {
-	    return ResponseEntity.ok(service.getClientBalance(clientId));
+	    return service.getClientBalance(clientId);
 	}
 
 

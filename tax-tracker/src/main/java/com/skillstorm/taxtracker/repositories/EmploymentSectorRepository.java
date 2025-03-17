@@ -7,5 +7,6 @@ import com.skillstorm.taxtracker.models.EmploymentSector;
 public interface EmploymentSectorRepository extends CrudRepository<EmploymentSector, Integer> {
 
 	Iterable<EmploymentSector> findByEmploymentSectorNameStartingWith(String startsWith);
+	
 
 }

@@ -18,8 +18,8 @@ public class TaxReturnController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Iterable<TaxReturn>> findAll(@RequestParam(required = false) String startsWith) {
-		return service.findAll(startsWith);
+	public ResponseEntity<Iterable<TaxReturn>> findAll(@RequestParam(required = false) Integer year) {
+		return service.findAllByYear(year);
 	}
 	
     @GetMapping("/employment-sector/{sectorId}")
@@ -30,6 +30,11 @@ public class TaxReturnController {
     @GetMapping("/cpa/{cpaId}")
     public ResponseEntity<Iterable<TaxReturn>> findByCpa(@PathVariable Integer cpaId) {
         return service.findByCpa(cpaId);
+    }
+    
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<Iterable<TaxReturn>> findByClient(@PathVariable Integer clientId) {
+        return service.findByClient(clientId);
     }
     
 	@GetMapping("/{id}")

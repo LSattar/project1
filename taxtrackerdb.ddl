@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`employment_sector` (
   UNIQUE INDEX `employment_sector_name_UNIQUE` (`employment_sector_name` ASC) VISIBLE,
   UNIQUE INDEX `unique_employment_sector` (`employment_sector_name` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 74
+AUTO_INCREMENT = 75
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`client` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 35
+AUTO_INCREMENT = 42
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -83,9 +83,10 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`cpa` (
   `zip` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 16
+AUTO_INCREMENT = 17
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `taxtracker`.`tax_return`
@@ -102,6 +103,9 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`tax_return` (
   `creation_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `employment_sector_id` INT NULL DEFAULT NULL,
+  `total_income` DECIMAL(10,2) NOT NULL,
+  `adjustments` DECIMAL(10,2) NULL DEFAULT '0.00',
+  `filing_status` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_return_cpa_idx` (`cpa_id` ASC) VISIBLE,
   INDEX `FK_return_client_idx` (`client_id` ASC) VISIBLE,
@@ -122,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`tax_return` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 38
+AUTO_INCREMENT = 44
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -144,9 +148,10 @@ CREATE TABLE IF NOT EXISTS `taxtracker`.`payment` (
     ON DELETE SET NULL
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

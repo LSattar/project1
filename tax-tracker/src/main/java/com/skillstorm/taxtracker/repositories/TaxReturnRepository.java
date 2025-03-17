@@ -21,6 +21,8 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
              @Param("status") String status);
     
     Iterable<TaxReturn> findByEmploymentSectorId(Integer employmentSectorId);
+    
+    Iterable<TaxReturn> findByClientId(Integer clientId);
 
 	boolean existsByClientIdAndYear(int id, int year);
 	
@@ -29,4 +31,6 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
 	Iterable<TaxReturn> findByCpaId(Integer cpaId);
 
 	Iterable<TaxReturn> findByClientId(int clientId);
+	
+	Iterable<TaxReturn> findByYear(int year);
 }

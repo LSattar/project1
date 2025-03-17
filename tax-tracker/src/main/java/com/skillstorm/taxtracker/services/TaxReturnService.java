@@ -1,6 +1,7 @@
 package com.skillstorm.taxtracker.services;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -37,28 +38,32 @@ public class TaxReturnService {
 		this.employmentRepo = employmentRepo;
 	}
 
-	// Find tax returns by client last name
-	public ResponseEntity<Iterable<TaxReturn>> findAll(String startsWith) {
+	public ResponseEntity<Iterable<TaxReturn>> findAllByYear(Integer year) {
+	    try {
+	        Iterable<TaxReturn> returns;
 
-		Iterable<TaxReturn> returns;
+	        if (year == null)
+	            returns = repo.findAll(); 
+	        else
+	            returns = repo.findByYear(year);
 
-		try {
-			if (startsWith == null)
-				returns = repo.findAll();
-			else
-				returns = repo.findByFilters(startsWith, null, startsWith);
+	        if (!returns.iterator().hasNext())
+	            return ResponseEntity.noContent().build();
+	        else
+	            return ResponseEntity.ok(returns);
 
-			if (!returns.iterator().hasNext())
-				return ResponseEntity.noContent().build();
-			else
-				return ResponseEntity.ok(returns);
-
-		} catch (Exception e) {
-			return ResponseEntity.status(500).build();
-		}
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
+
 	
+	// Find tax return by employment sector
 	public ResponseEntity<Iterable<TaxReturn>> findByEmploymentSector(Integer employmentSectorId) {
+	    if (employmentSectorId == null || !employmentRepo.existsById(employmentSectorId)) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+
 	    try {
 	        Iterable<TaxReturn> returns = repo.findByEmploymentSectorId(employmentSectorId);
 	        return returns.iterator().hasNext() ? ResponseEntity.ok(returns) : ResponseEntity.noContent().build();
@@ -67,7 +72,12 @@ public class TaxReturnService {
 	    }
 	}
 	
+	// Find tax return by CPA
 	public ResponseEntity<Iterable<TaxReturn>> findByCpa(Integer cpaId) {
+	    if (cpaId == null || !cpaRepo.existsById(cpaId)) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+
 	    try {
 	        Iterable<TaxReturn> returns = repo.findByCpaId(cpaId);
 	        return returns.iterator().hasNext() ? ResponseEntity.ok(returns) : ResponseEntity.noContent().build();
@@ -75,6 +85,21 @@ public class TaxReturnService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+	
+	// Find tax return by client
+	public ResponseEntity<Iterable<TaxReturn>> findByClient(Integer clientId) {
+	    if (clientId == null || !clientRepo.existsById(clientId)) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+
+	    try {
+	        Iterable<TaxReturn> returns = repo.findByClientId(clientId);
+	        return returns.iterator().hasNext() ? ResponseEntity.ok(returns) : ResponseEntity.noContent().build();
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
+	}
+
 	
 	// Find tax return by ID
     public ResponseEntity<TaxReturn> findTaxReturnById(int id) {
@@ -85,45 +110,55 @@ public class TaxReturnService {
 
 
 	// Create tax return
-	public ResponseEntity<TaxReturn> createTaxReturn(TaxReturnDTO dto) {
-	    try {
-	        Client client = clientRepo.findById(dto.client().getId())
-	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+    public ResponseEntity<TaxReturn> createTaxReturn(TaxReturnDTO dto) {
+        try {
+            Client client = clientRepo.findById(dto.client().getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-	        Cpa cpa = null;
-	        if (dto.cpa() != null) {
-	            cpa = cpaRepo.findById(dto.cpa().getId())
-	                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-	        }
+            Cpa cpa = null;
+            if (dto.cpa() != null) {
+                cpa = cpaRepo.findById(dto.cpa().getId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+            }
 
-	        EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
-	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-	        
-	        if (repo.existsByClientIdAndYear(client.getId(), dto.year())) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); 
-	        }
-	        
-	        int returnCount = repo.countByCpaIdAndYear(cpa.getId(), dto.year());
-	        
-	        if (returnCount >= MAX_RETURNS_PER_CPA) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT)
-	                    .body(null);
-	        }
-	        
-	        TaxReturn saved = repo.save(new TaxReturn(
-	                0, client, cpa, dto.year(), dto.status(),
-	                dto.amountOwed(), dto.amountPaid(), dto.cost(),
-	                null, null, employmentSector));
+            EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-	        return ResponseEntity.created(new URI(this.baseURL + "tax-return/" + saved.getId())).body(saved);
+            if (repo.existsByClientIdAndYear(client.getId(), dto.year())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .header("X-Error-Message", "A tax return already exists for this client in the specified year.")
+                        .body(null);
+            }
 
-	    } catch (ResponseStatusException e) {
-	        return ResponseEntity.status(e.getStatusCode()).body(null);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	    }
-	}
+            if (cpa != null) {
+                int returnCount = repo.countByCpaIdAndYear(cpa.getId(), dto.year());
+                if (returnCount >= MAX_RETURNS_PER_CPA) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .header("X-Error-Message", "The CPA has reached the maximum allowed tax returns for this year.")
+                            .body(null);
+                }
+            }
+
+            LocalDate now = LocalDate.now();
+            TaxReturn newTaxReturn = new TaxReturn(
+                    0, client, cpa, dto.year(), dto.status(),
+                    dto.amountOwed(), dto.amountPaid(), dto.cost(),
+                    employmentSector,
+                    dto.totalIncome(), dto.adjustments(), dto.filingStatus(),
+                    now, null
+            );
+
+            TaxReturn saved = repo.save(newTaxReturn);
+
+            return ResponseEntity.created(new URI(this.baseURL + "tax-return/" + saved.getId())).body(saved);
+
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 	
 	// Update a tax return
 	public ResponseEntity<TaxReturn> updateTaxReturn(int id, TaxReturnDTO dto) {
@@ -143,16 +178,30 @@ public class TaxReturnService {
 
 	        EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
 	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+	        TaxReturn existingTaxReturn = repo.findById(id)
+	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+	        if (repo.existsByClientIdAndYear(client.getId(), dto.year()) && id != existingTaxReturn.getId()) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT)
+	                    .header("X-Error-Message", "The client already has a tax return for this year")
+	                    .body(null);
+	        }
 	        
-	        if (repo.existsByClientIdAndYear(client.getId(), dto.year())) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); 
+	        int returnCount = repo.countByCpaIdAndYear(cpa.getId(), dto.year());
+	        
+	        if (returnCount >= MAX_RETURNS_PER_CPA) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT).header("X-Error-Message", "The CPA has reached the maximum allowed tax returns for this year.")
+	                    .body(null);
 	        }
 
-	        TaxReturn updated = repo.save(new TaxReturn(
+	        TaxReturn updated = new TaxReturn(
 	                id, client, cpa, dto.year(), dto.status(),
 	                dto.amountOwed(), dto.amountPaid(), dto.cost(),
-	                dto.creationDate(), dto.updateDate(), employmentSector));
+	                existingTaxReturn.getCreationDate(), null, employmentSector
+	        );
 
+	        repo.save(updated);
 	        return ResponseEntity.ok(updated);
 
 	    } catch (ResponseStatusException e) {
