@@ -41,6 +41,13 @@ public class CpaService {
 			return ResponseEntity.status(500).build();
 		}
 	}
+	
+	// Find Cpa by ID
+    public ResponseEntity<Cpa> findCpaById(int id) {
+        return repo.findById(id)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 	// Create CPA
 	public ResponseEntity<Cpa> createCpa(CpaDTO dto) {

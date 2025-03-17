@@ -21,6 +21,11 @@ public class CpaController {
 	public ResponseEntity<Iterable<Cpa>> findAll(@RequestParam(required = false) String startsWith) {
 		return service.findAll(startsWith);
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Cpa> findCpaById(@PathVariable int id) {
+		return service.findCpaById(id);
+	}
 
 	@PostMapping
 	public ResponseEntity<Cpa> createCpa(@RequestBody CpaDTO dto) {

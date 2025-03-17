@@ -22,12 +22,15 @@ public class TaxReturnController {
 		return service.findAll(startsWith);
 	}
 	
-    // Find tax returns by employment sector
     @GetMapping("/employment-sector/{sectorId}")
     public ResponseEntity<Iterable<TaxReturn>> findByEmploymentSector(@PathVariable Integer sectorId) {
         return service.findByEmploymentSector(sectorId);
     }
-
+    
+	@GetMapping("/{id}")
+	public ResponseEntity<TaxReturn> findTaxReturnById(@PathVariable int id) {
+		return service.findTaxReturnById(id);
+	}
 
 	@PostMapping
 	public ResponseEntity<TaxReturn> createTaxReturn(@RequestBody TaxReturnDTO dto) {

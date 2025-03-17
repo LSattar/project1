@@ -64,6 +64,14 @@ public class TaxReturnService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+	
+	// Find tax return by ID
+    public ResponseEntity<TaxReturn> findTaxReturnById(int id) {
+        return repo.findById(id)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
 	// Create tax return
 	public ResponseEntity<TaxReturn> createTaxReturn(TaxReturnDTO dto) {
@@ -82,6 +90,11 @@ public class TaxReturnService {
 	        EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
 	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
 	                        "Employment Sector not found with ID: " + dto.employmentSector().getId()));
+	        
+	        if (repo.existsByClientIdAndYear(client.getId(), dto.year())) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT)
+	                    .body(null); 
+	        }
 
 	        TaxReturn saved = repo.save(new TaxReturn(
 	                0, client, cpa, dto.year(), dto.status(),
@@ -111,11 +124,20 @@ public class TaxReturnService {
 	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
 	                        "Client not found with ID: " + dto.client().getId()));
 
-	        Cpa cpa = cpaRepo.findById(dto.cpa().getId()).orElse(null);
+	        Cpa cpa = null;
+	        if (dto.cpa() != null) {
+	            cpa = cpaRepo.findById(dto.cpa().getId())
+	                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+	                            "CPA not found with ID: " + dto.cpa().getId()));
+	        }
 
-	        EmploymentSector employmentSector = dto.employmentSector();
-	        if (employmentSector == null) {
-	            employmentSector = client.getEmploymentSector(); // ✅ Default to client’s employment sector if not specified
+	        EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
+	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+	                        "Employment Sector not found with ID: " + dto.employmentSector().getId()));
+	        
+	        if (repo.existsByClientIdAndYear(client.getId(), dto.year())) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT)
+	                    .body(null); 
 	        }
 
 	        TaxReturn updated = repo.save(new TaxReturn(

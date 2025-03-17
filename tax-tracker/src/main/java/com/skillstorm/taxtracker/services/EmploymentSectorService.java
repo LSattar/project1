@@ -49,6 +49,13 @@ public class EmploymentSectorService {
 			return ResponseEntity.status(500).build();
 		}
 	}
+	
+	// Find employment sectors by ID
+    public ResponseEntity<EmploymentSector> findEmploymentSectorById(int id) {
+        return repo.findById(id)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 	// Create employment sector
 	public ResponseEntity<EmploymentSector> createEmploymentSector(EmploymentSectorDTO dto) {

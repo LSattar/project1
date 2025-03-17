@@ -21,6 +21,11 @@ public class PaymentController {
 	public ResponseEntity<Iterable<Payment>> findAll(@RequestParam(required = false) String startsWith) {
 		return service.findAll(startsWith);
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Payment> findPaymentById(@PathVariable int id) {
+		return service.findPaymentById(id);
+	}
 
 	@PostMapping
 	public ResponseEntity<Payment> createPayment(@RequestBody PaymentDTO dto) {

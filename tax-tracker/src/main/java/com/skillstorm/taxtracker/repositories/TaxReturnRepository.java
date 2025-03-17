@@ -22,5 +22,7 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
     
     @Query("SELECT t FROM TaxReturn t WHERE t.employmentSector.id = :employmentSectorId")
     Iterable<TaxReturn> findByEmploymentSectorId(@Param("employmentSectorId") Integer employmentSectorId);
+
+	boolean existsByClientIdAndYear(int id, int year);
 	
 }

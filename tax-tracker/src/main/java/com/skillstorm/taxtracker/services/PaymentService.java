@@ -47,6 +47,13 @@ public class PaymentService {
 			return ResponseEntity.status(500).build();
 		}
 	}
+	
+	// Find payment by ID
+    public ResponseEntity<Payment> findPaymentById(int id) {
+        return repo.findById(id)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 	// Create a new payment
 	public ResponseEntity<Payment> createPayment(PaymentDTO dto) {
