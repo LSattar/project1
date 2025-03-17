@@ -27,4 +27,6 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
 	int countByCpaIdAndYear(int cpaId, int year);
 
 	Iterable<TaxReturn> findByCpaId(Integer cpaId);
+
+	Iterable<TaxReturn> findByClientId(int clientId);
 }

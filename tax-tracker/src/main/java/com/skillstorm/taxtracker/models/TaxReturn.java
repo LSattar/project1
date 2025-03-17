@@ -2,6 +2,8 @@ package com.skillstorm.taxtracker.models;
 
 import jakarta.persistence.*;
 import com.skillstorm.taxtracker.models.*;
+
+import java.math.BigDecimal;
 import java.time.*;
 
 @Entity
@@ -28,13 +30,13 @@ public class TaxReturn {
 	private String status;
 	
 	@Column(name = "amount_owed")
-	private int amountOwed;
+	private BigDecimal amountOwed;
 	
 	@Column(name = "amount_paid")
-	private int amountPaid;
+	private BigDecimal amountPaid;
 	
 	@Column(name = "cost")
-	private int cost;
+	private BigDecimal cost;
 	
     @Column(name = "creation_date", updatable = false)
     private LocalDate creationDate;
@@ -61,7 +63,7 @@ public class TaxReturn {
 		super();
 	}
 
-	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, int amountOwed, int amountPaid, int cost,
+	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, BigDecimal amountOwed, BigDecimal amountPaid, BigDecimal cost,
 			LocalDate creationDate, LocalDate updateDate, EmploymentSector employmentSector) {
 		super();
 		this.id = id;
@@ -77,7 +79,7 @@ public class TaxReturn {
 		this.employmentSector = employmentSector;
 	}
 	
-	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, int amountOwed, int amountPaid, int cost,
+	public TaxReturn(int id, Client client, Cpa cpa, int year, String status, BigDecimal amountOwed, BigDecimal amountPaid, BigDecimal cost,
 			LocalDate creationDate, LocalDate updateDate) {
 		super();
 		this.id = id;
@@ -132,27 +134,27 @@ public class TaxReturn {
 		this.status = status;
 	}
 
-	public int getAmountOwed() {
+	public BigDecimal getAmountOwed() {
 		return amountOwed;
 	}
 
-	public void setAmountOwed(int amountOwed) {
+	public void setAmountOwed(BigDecimal amountOwed) {
 		this.amountOwed = amountOwed;
 	}
 
-	public int getAmountPaid() {
+	public BigDecimal getAmountPaid() {
 		return amountPaid;
 	}
 
-	public void setAmountPaid(int amountPaid) {
+	public void setAmountPaid(BigDecimal amountPaid) {
 		this.amountPaid = amountPaid;
 	}
 
-	public int getCost() {
+	public BigDecimal getCost() {
 		return cost;
 	}
 
-	public void setCost(int cost) {
+	public void setCost(BigDecimal cost) {
 		this.cost = cost;
 	}
 

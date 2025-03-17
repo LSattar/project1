@@ -1,5 +1,6 @@
 package com.skillstorm.taxtracker.services;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -7,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.skillstorm.taxtracker.repositories.ClientRepository;
 import com.skillstorm.taxtracker.repositories.PaymentRepository;
 import com.skillstorm.taxtracker.repositories.TaxReturnRepository;
 import com.skillstorm.taxtracker.dtos.PaymentDTO;
+import com.skillstorm.taxtracker.models.Client;
 import com.skillstorm.taxtracker.models.Payment;
 import com.skillstorm.taxtracker.models.TaxReturn;
 
@@ -21,10 +24,12 @@ public class PaymentService {
 
 	private PaymentRepository repo;
 	private TaxReturnRepository taxReturnRepo;
+	private ClientRepository clientRepo;
 
-	public PaymentService(PaymentRepository repo, TaxReturnRepository taxReturnRepo) {
+	public PaymentService(PaymentRepository repo, TaxReturnRepository taxReturnRepo, ClientRepository clientRepo) {
 		this.repo = repo;
 		this.taxReturnRepo = taxReturnRepo;
+		this.clientRepo = clientRepo;
 	}
 
 	// Find payments by client last name (optional)
@@ -105,4 +110,45 @@ public class PaymentService {
 			return ResponseEntity.status(500).build();
 		}
 	}
+	
+	// Get balance for individual tax return
+	public ResponseEntity<BigDecimal> getTaxReturnBalance(int taxReturnId) {
+		
+	    if (!taxReturnRepo.existsById(taxReturnId)) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+		
+	    return taxReturnRepo.findById(taxReturnId)
+	            .map(taxReturn -> {
+	                BigDecimal totalPayments = repo.sumPaymentsByTaxReturnId(taxReturnId);
+	                if (totalPayments == null) totalPayments = BigDecimal.ZERO;
+	                BigDecimal balance = taxReturn.getCost().subtract(totalPayments);
+	                return ResponseEntity.ok(balance);
+	            })
+	            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+	}
+
+	
+	//Get balance for client
+	public ResponseEntity<BigDecimal> getClientBalance(int clientId) {
+	    if (!clientRepo.existsById(clientId)) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+
+	    Iterable<TaxReturn> taxReturns = taxReturnRepo.findByClientId(clientId);
+	    if (!taxReturns.iterator().hasNext()) {
+	        return ResponseEntity.ok(BigDecimal.ZERO);
+	    }
+
+	    BigDecimal totalBalance = BigDecimal.ZERO;
+	    for (TaxReturn taxReturn : taxReturns) {
+	        ResponseEntity<BigDecimal> taxReturnBalance = getTaxReturnBalance(taxReturn.getId());
+	        if (taxReturnBalance.getStatusCode().is2xxSuccessful()) {
+	            totalBalance = totalBalance.add(taxReturnBalance.getBody());
+	        }
+	    }
+
+	    return ResponseEntity.ok(totalBalance);
+	}
+
 }

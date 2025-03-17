@@ -1,4 +1,6 @@
 package com.skillstorm.taxtracker.repositories;
+import java.math.BigDecimal;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +15,9 @@ public interface PaymentRepository extends CrudRepository<Payment, Integer> {
 	           "JOIN t.client c " +
 	           "WHERE LOWER(c.lastName) = LOWER(:lastName)")
 	    Iterable<Payment> findByClientLastName(@Param("lastName") String lastName);
+	
+	@Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.taxReturn.id = :taxReturnId")
+	BigDecimal sumPaymentsByTaxReturnId(@Param("taxReturnId") int taxReturnId);
+
 	
 }

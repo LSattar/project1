@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.skillstorm.taxtracker.repositories.ClientRepository;
 import com.skillstorm.taxtracker.repositories.EmploymentSectorRepository;
+import com.skillstorm.taxtracker.utils.HashUtil;
 import com.skillstorm.taxtracker.dtos.ClientDTO;
 import com.skillstorm.taxtracker.models.Client;
 import com.skillstorm.taxtracker.models.EmploymentSector;
@@ -28,21 +29,6 @@ public class ClientService {
     public ClientService(ClientRepository repo, EmploymentSectorRepository employmentSectorRepo) {
         this.repo = repo;
         this.employmentSectorRepo = employmentSectorRepo;
-    }
-
-    // Hash SSN using SHA-256
-    private String hashSSN(String ssn) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(ssn.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : encodedHash) {
-                hexString.append(String.format("%02x", b));
-            }
-            return hexString.toString(); // Always generates the same hash for the same SSN
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing SSN", e);
-        }
     }
 
     // Find client by ID
@@ -62,7 +48,7 @@ public class ClientService {
     
     // Find client by SSN
     public ResponseEntity<Client> findBySsn(String ssn) {
-        String hashedSSN = hashSSN(ssn); 
+        String hashedSSN = HashUtil.hashSSN(ssn); 
         return repo.findByHashedSsn(hashedSSN)
                    .map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.notFound().build());
@@ -74,7 +60,7 @@ public class ClientService {
             EmploymentSector employmentSector = employmentSectorRepo.findById(dto.employmentSector().getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-            String hashedSsn = hashSSN(dto.ssn());
+            String hashedSsn = HashUtil.hashSSN(dto.ssn());
 
             Client newClient = new Client(0, dto.firstName(), dto.lastName(), dto.ssn(), hashedSsn, dto.dob(),
                     dto.phone(), dto.email(), dto.address1(), dto.address2(), dto.city(), dto.state(), dto.zip(),
@@ -105,7 +91,7 @@ public class ClientService {
 
             String hashedSsn = existingClient.getHashedSsn();
             if (!dto.ssn().equals(existingClient.getSsn())) {
-                hashedSsn = hashSSN(dto.ssn());
+                hashedSsn = HashUtil.hashSSN(dto.ssn());
             }
 
             Client updated = repo.save(new Client(id, dto.firstName(), dto.lastName(), dto.ssn(), hashedSsn, dto.dob(),
@@ -138,7 +124,7 @@ public class ClientService {
     // Reactivate client using SSN
     public ResponseEntity<Client> reactivateClient(String ssn, ClientDTO dto) {
         try {
-            String hashedSsn = hashSSN(ssn);
+            String hashedSsn = HashUtil.hashSSN(ssn);
 
             Client client = repo.findByHashedSsn(hashedSsn)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));

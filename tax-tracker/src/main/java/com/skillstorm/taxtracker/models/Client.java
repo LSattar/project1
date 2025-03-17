@@ -2,7 +2,10 @@ package com.skillstorm.taxtracker.models;
 
 import jakarta.persistence.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skillstorm.taxtracker.models.*;
+import com.skillstorm.taxtracker.utils.HashUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -27,6 +30,7 @@ public class Client {
     private String ssn;
 
     @Column(name = "hashed_ssn", unique = true, nullable = false)
+    @JsonIgnore
     private String hashedSsn;
 
     @Column(name = "dob")
@@ -70,7 +74,7 @@ public class Client {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.ssn = ssn; // Store plain SSN initially
-		this.hashedSsn = hashSSN(ssn); // Hash SSN for reactivation
+		this.hashedSsn = HashUtil.hashSSN(ssn); // Hash SSN for reactivation + security purposes
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;
@@ -103,29 +107,11 @@ public class Client {
 		this.isActive = isActive;
 	}
 
-    private String hashSSN(String ssn) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(ssn.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : encodedHash) {
-                hexString.append(String.format("%02x", b));
-            }
-            return hexString.toString(); // Always returns the same hash for the same SSN
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing SSN", e);
-        }
-    }
-
 	public void deactivateClient() {
-	    this.isActive = false;
-	    
-	    // Preserve hashed SSN for reactivation lookup
-	    String preservedHashedSSN = this.hashedSsn;
-	    
+	    this.isActive = false;	    
 	    this.firstName = null;
 	    this.lastName = null;
-	    this.ssn = null; // Remove plaintext SSN
+	    this.ssn = null; 
 	    this.dob = null;
 	    this.phone = null;
 	    this.email = null;
@@ -134,9 +120,6 @@ public class Client {
 	    this.city = null;
 	    this.state = null;
 	    this.zip = null;
-
-	    // Reassign the hashed SSN to prevent it from being nulled
-	    this.hashedSsn = preservedHashedSSN;
 	}
 
 	public void reactivateClient(String firstName, String lastName, String ssn, LocalDate dob, String phone,
@@ -144,7 +127,7 @@ public class Client {
 		this.isActive = true;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.ssn = ssn; // Restore plaintext SSN for tax filing
+		this.ssn = ssn; 
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;

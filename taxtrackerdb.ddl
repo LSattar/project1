@@ -87,22 +87,6 @@ AUTO_INCREMENT = 16
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-
--- -----------------------------------------------------
--- Table `taxtracker`.`document_category`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `taxtracker`.`document_category` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `document_type` VARCHAR(50) NULL DEFAULT NULL,
-  `document_description` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `unique_document_type` (`document_type` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 37
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
 -- -----------------------------------------------------
 -- Table `taxtracker`.`tax_return`
 -- -----------------------------------------------------
@@ -163,39 +147,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `taxtracker`.`tax_document`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `taxtracker`.`tax_document` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `client_id` INT NOT NULL,
-  `tax_return_id` INT NULL DEFAULT NULL,
-  `document_category_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `FK_document_client_idx` (`client_id` ASC) VISIBLE,
-  INDEX `FK_document_return_idx` (`tax_return_id` ASC) VISIBLE,
-  INDEX `FK_document_category_idx` (`document_category_id` ASC) VISIBLE,
-  CONSTRAINT `FK_document_category`
-    FOREIGN KEY (`document_category_id`)
-    REFERENCES `taxtracker`.`document_category` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE,
-  CONSTRAINT `FK_document_client`
-    FOREIGN KEY (`client_id`)
-    REFERENCES `taxtracker`.`client` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `FK_document_return`
-    FOREIGN KEY (`tax_return_id`)
-    REFERENCES `taxtracker`.`tax_return` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

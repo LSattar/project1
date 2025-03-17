@@ -1,5 +1,7 @@
 package com.skillstorm.taxtracker.controllers;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +43,17 @@ public class PaymentController {
 	public ResponseEntity<Void> deleteById(@PathVariable int id) {
 		return service.deleteById(id);
 	}
+	
+	@GetMapping("/tax-return/{taxReturnId}/balance")
+	public ResponseEntity<BigDecimal> getTaxReturnBalance(@PathVariable int taxReturnId) {
+	    return ResponseEntity.ok(service.getTaxReturnBalance(taxReturnId));
+	}
+	
+	@GetMapping("/client/{clientId}/balance")
+	public ResponseEntity<BigDecimal> getClientBalance(@PathVariable int clientId) {
+	    return ResponseEntity.ok(service.getClientBalance(clientId));
+	}
+
+
 
 }

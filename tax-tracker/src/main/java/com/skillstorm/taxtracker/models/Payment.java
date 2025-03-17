@@ -1,5 +1,6 @@
 package com.skillstorm.taxtracker.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ public class Payment {
 	private int id;
 	
 	@Column(name = "amount")
-	private int amount;
+	private BigDecimal amount;
 	
 	@Column(name = "date")
 	private LocalDate date;
@@ -31,7 +32,7 @@ public class Payment {
 		super();
 	}
 
-	public Payment(int id, int amount, LocalDate date, TaxReturn taxReturn, String method) {
+	public Payment(int id, BigDecimal amount, LocalDate date, TaxReturn taxReturn, String method) {
 		super();
 		this.id = id;
 		this.amount = amount;
@@ -48,11 +49,11 @@ public class Payment {
 		this.id = id;
 	}
 
-	public int getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

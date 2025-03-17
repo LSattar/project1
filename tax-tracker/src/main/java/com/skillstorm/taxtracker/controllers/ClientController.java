@@ -53,8 +53,8 @@ public class ClientController {
         return service.deactivateClient(id);
     }
 	
-    @PostMapping("/reactivate")
-    public ResponseEntity<Client> reactivateClient(@RequestParam String ssn, @RequestBody ClientDTO dto) {
+    @PutMapping("/{ssn}/reactivate")
+    public ResponseEntity<Client> reactivateClient(@PathVariable String ssn, @RequestBody ClientDTO dto) {
         return service.reactivateClient(ssn, dto);
     }
 
