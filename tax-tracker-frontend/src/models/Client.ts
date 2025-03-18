@@ -1,3 +1,5 @@
+import { EmploymentSector } from "./EmploymentSector.ts";
+
 export class Client {
     id: number;
     firstName: string;
@@ -12,6 +14,7 @@ export class Client {
     city: string;
     state: string;
     zip: string;
+    employmentSector: EmploymentSector
 
     constructor(
         id: number,
@@ -26,7 +29,8 @@ export class Client {
         address2: string,
         city: string,
         state: string,
-        zip: string
+        zip: string,
+        employmentSector: EmploymentSector
     ) {
         this.id = id;
         this.firstName = firstName;
@@ -41,5 +45,6 @@ export class Client {
         this.city = city;
         this.state = state;
         this.zip = zip;
+        this.employmentSector = employmentSector;
     }
 }

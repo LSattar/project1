@@ -233,6 +233,18 @@ public class Client {
 	public void setState(String state) {
 		this.state = state;
 	}
+	
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	public EmploymentSector getEmploymentSector() {
 		return employmentSector;
