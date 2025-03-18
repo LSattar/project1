@@ -1,0 +1,45 @@
+/* The sidebar menu */
+.sidebar-content {
+    height: 100%; /* Full-height */
+    width: 160px; /* Set the width of the sidebar */
+    font-size: 28px;
+    padding: .5em;
+    position: fixed; /* Fixed Sidebar */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #7e7d7d; /* Black */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+    text-align: left;
+  }
+  
+  /* The navigation menu links */
+  .sidebar-content a {
+    padding: 10px 16px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #000000;
+    display: block; /* Ensures the links stack vertically */
+    width: 100%; /* Makes links expand full width of sidebar */
+    box-sizing: border-box;
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .sidebar-content a:hover {
+    color: #f1f1f1;
+  }
+
+  nav {
+    justify-content: center;
+    margin-top: 10px;
+}
+
+nav a:last-child {
+    margin-right: 0; 
+}
+
+nav a:hover{
+    color: lightgreen;
+}
+  
