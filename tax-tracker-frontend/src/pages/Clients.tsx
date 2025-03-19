@@ -29,7 +29,7 @@ export const Clients = () => {
     }, []);
 
     return (
-        <main className="main-content">
+        <main>
             <h1>Clients</h1>
             <table>
                 <thead>
@@ -70,11 +70,13 @@ export const Clients = () => {
             </table>
 
             {selectedClientId && (
+                <div className="main-content">
                 <div className="client-profile-overlay">
                     <ClientProfile 
                         clientId={selectedClientId} 
                         onClose={() => setSelectedClientId(null)} 
                     />
+                </div>
                 </div>
             )}
         </main>
