@@ -4,6 +4,7 @@ import { Client } from '../models/Client.ts';
 import React from 'react';
 import { ClientProfile } from '../components/ClientProfile.tsx';
 import { TaxReturn } from '../models/TaxReturn.ts';
+import { Cpa } from '../models/Cpa.ts';
 
 export const TaxReturns = () => {
 const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
@@ -32,6 +33,7 @@ const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
     return (
         <main>
             <h1>Tax Returns</h1>
+            <button>Create New Tax Return</button>
             <table>
                 <thead>
                     <tr>
@@ -41,6 +43,7 @@ const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
                         <th>Amount Owed</th>
                         <th>Amount Paid</th>
                         <th>Employment Sector</th>
+                        <th>Assigned To</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -63,9 +66,10 @@ const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
                                 </button>
                             </td>
                             <td>{taxReturn.year}</td>
-                            <td>{taxReturn.amountOwed}</td>
-                            <td>{taxReturn.amountPaid}</td>
+                            <td>${taxReturn.amountOwed}</td>
+                            <td>${taxReturn.amountPaid}</td>
                             <td>{taxReturn.employmentSector.employmentSectorName}</td>
+                            <td>{taxReturn.cpa.firstName} {taxReturn.cpa.lastName}</td>
                             <td>{taxReturn.status}</td>
                         </tr>
                     ))}

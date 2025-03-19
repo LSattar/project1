@@ -27,7 +27,7 @@ export const EmploymentSectors = () => {
 
     const addEmploymentSector = async( event: any): Promise<void> => {
         event.preventDefault();
-        setErrorMessage(null); // Clear any previous error messages
+        setErrorMessage(null);
 
         if (!addFormName.current?.value.trim()) {
             setErrorMessage("Employment sector name cannot be empty.");
@@ -39,8 +39,8 @@ export const EmploymentSectors = () => {
                 employmentSectorName: Capitalize(addFormName.current.value)
             });
 
-            addFormName.current.value = ""; // Clear the input field
-            await getAllEmploymentSectors(); // Refresh the table
+            addFormName.current.value = "";
+            await getAllEmploymentSectors(); 
         } catch (error: any) {
             if (error.response && error.response.status === 409) {
                 setErrorMessage("This employment sector already exists.");
@@ -83,8 +83,8 @@ export const EmploymentSectors = () => {
                     <tr>
                         <th>ID</th>
                         <th>Sector Name</th>
-                        <th></th>
-                        <th></th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,16 +93,14 @@ export const EmploymentSectors = () => {
                             <td>{sector.id}</td>
                             <td>{sector.employmentSectorName}</td>
                             <td>
-                                <button onClick= {() => updateEmploymentSector(sector.id)}
-                                    style={{ background: "none", border: "none", cursor: "pointer" }}
+                                <button className='icon' onClick= {() => updateEmploymentSector(sector.id)}
                                 >
-                                    <img src="/images/pencil.png" alt="Delete" width="20" height="20" />
+                                    <img src="/images/pencil.png" alt="Delete"/>
                                 </button>
                             </td>
                             <td>
-                                <button 
+                                <button className='icon'
                                     onClick={() => deleteEmploymentSector(sector.id)} 
-                                    style={{ background: "none", border: "none", cursor: "pointer" }}
                                 >
                                     <img src="/images/trash-can.png" alt="Delete" width="20" height="20" />
                                 </button>

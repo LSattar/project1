@@ -25,11 +25,13 @@
     font-size: 16px;
     padding: 5px 10px;
     background: red;
+    border: 1px, solid, red;
     color: white;
 }
 
 .client-profile .button-update{
     background: blue;
+    border: 1px, solid, blue;
 }
 
 .client-profile-overlay {
@@ -51,4 +53,19 @@
 
 .ssn-container:hover .hidden {
     visibility: visible;
+}
+
+ label {
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    margin: 16px;
+}
+
+select {
+    font-size: 16px;
+}
+
+.edit-client-form{
+    background-color: white;
 }
