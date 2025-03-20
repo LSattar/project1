@@ -1,7 +1,9 @@
 package com.skillstorm.taxtracker.services;
 
 import java.net.URI;
+import org.slf4j.*;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,14 @@ import com.skillstorm.taxtracker.models.Client;
 import com.skillstorm.taxtracker.models.Cpa;
 import com.skillstorm.taxtracker.models.TaxReturn;
 
+
 @Service
 public class TaxReturnService {
 
 	@Value("${base-url}")
 	private String baseURL;
+	
+	private static Logger logger = LoggerFactory.getLogger(TaxReturnService.class);
 
 	private TaxReturnRepository repo;
 	private ClientRepository clientRepo;
@@ -160,56 +165,95 @@ public class TaxReturnService {
         }
     }
 	
-	// Update a tax return
-	public ResponseEntity<TaxReturn> updateTaxReturn(int id, TaxReturnDTO dto) {
-	    try {
-	        if (!repo.existsById(id)) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	        }
+    // Update a tax return
+    public ResponseEntity<TaxReturn> updateTaxReturn(int id, TaxReturnDTO dto) {
+        try {
+        	logger.info("Starting update process for TaxReturn with ID: {} | totalIncome: {} | adjustments: {} | filingStatus: {}",
+        	        id, dto.totalIncome(), dto.adjustments(), dto.filingStatus());
 
-	        Client client = clientRepo.findById(dto.client().getId())
-	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-	        Cpa cpa = null;
-	        if (dto.cpa() != null) {
-	            cpa = cpaRepo.findById(dto.cpa().getId())
-	                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-	        }
+            if (!repo.existsById(id)) {
+                logger.warn("TaxReturn with ID {} not found", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
 
-	        EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
-	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+            logger.debug("Fetching client with ID: {}", dto.client().getId());
+            Client client = clientRepo.findById(dto.client().getId())
+                    .orElseThrow(() -> {
+                        logger.error("Invalid client ID: {}", dto.client().getId());
+                        return new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    });
 
-	        TaxReturn existingTaxReturn = repo.findById(id)
-	                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Cpa cpa = null;
+            if (dto.cpa() != null) {
+                logger.debug("Fetching CPA with ID: {}", dto.cpa().getId());
+                cpa = cpaRepo.findById(dto.cpa().getId())
+                        .orElseThrow(() -> {
+                            logger.error("Invalid CPA ID: {}", dto.cpa().getId());
+                            return new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                        });
+            }
 
-	        if (repo.existsByClientIdAndYear(client.getId(), dto.year()) && id != existingTaxReturn.getId()) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT)
-	                    .header("X-Error-Message", "The client already has a tax return for this year")
-	                    .body(null);
-	        }
-	        
-	        int returnCount = repo.countByCpaIdAndYear(cpa.getId(), dto.year());
-	        
-	        if (returnCount >= MAX_RETURNS_PER_CPA) {
-	            return ResponseEntity.status(HttpStatus.CONFLICT).header("X-Error-Message", "The CPA has reached the maximum allowed tax returns for this year.")
-	                    .body(null);
-	        }
+            logger.debug("Fetching employment sector with ID: {}", dto.employmentSector().getId());
+            EmploymentSector employmentSector = employmentRepo.findById(dto.employmentSector().getId())
+                    .orElseThrow(() -> {
+                        logger.error("Invalid employment sector ID: {}", dto.employmentSector().getId());
+                        return new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    });
 
-	        TaxReturn updated = new TaxReturn(
-	                id, client, cpa, dto.year(), dto.status(),
-	                dto.amountOwed(), dto.amountPaid(), dto.cost(),
-	                existingTaxReturn.getCreationDate(), null, employmentSector
-	        );
+            logger.debug("Fetching existing TaxReturn with ID: {}", id);
+            TaxReturn existingTaxReturn = repo.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Existing TaxReturn with ID {} not found", id);
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND);
+                    });
 
-	        repo.save(updated);
-	        return ResponseEntity.ok(updated);
+            Optional<TaxReturn> existingRecord = repo.findByClientIdAndYear(client.getId(), dto.year());
 
-	    } catch (ResponseStatusException e) {
-	        return ResponseEntity.status(e.getStatusCode()).body(null);
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
-	}
+            if (existingRecord.isPresent() && existingRecord.get().getId() != id) {
+                logger.warn("Conflict: Client ID {} already has a tax return for year {}", client.getId(), dto.year());
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .header("X-Error-Message", "The client already has a tax return for this year")
+                        .body(null);
+            }
+
+
+
+            logger.debug("Counting tax returns for CPA ID {} in year {}", (cpa != null ? cpa.getId() : "N/A"), dto.year());
+            int returnCount = (cpa != null) ? repo.countByCpaIdAndYear(cpa.getId(), dto.year()) : 0;
+
+            if (cpa != null && returnCount >= MAX_RETURNS_PER_CPA) {
+                logger.warn("Conflict: CPA ID {} has reached max returns ({}) for year {}", cpa.getId(), MAX_RETURNS_PER_CPA, dto.year());
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .header("X-Error-Message", "The CPA has reached the maximum allowed tax returns for this year.")
+                        .body(null);
+            }
+
+            logger.info("Updating TaxReturn with ID: {}", id);
+            TaxReturn updated = new TaxReturn(
+                    id, client, cpa, dto.year(), dto.status(),
+                    dto.amountOwed(), dto.amountPaid(), dto.cost(),
+                    employmentSector, 
+                    dto.totalIncome(), dto.adjustments(), dto.filingStatus(), 
+                    existingTaxReturn.getCreationDate(), LocalDate.now()
+            );
+
+
+            repo.save(updated);
+            logger.info("Successfully updated TaxReturn with ID: {}", id);
+            return ResponseEntity.ok(updated);
+
+        } catch (ResponseStatusException e) {
+            logger.error("ResponseStatusException occurred: {}", e.getReason());
+            return ResponseEntity.status(e.getStatusCode()).body(null);
+        } catch (Exception e) {
+            logger.error("Unexpected error occurred while updating TaxReturn ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .header("X-Error-Message", "Unknown error")
+                    .build();
+        }
+    }
+
 
 	// Delete tax return
 	public ResponseEntity<Void> deleteById(int id) {

@@ -1,4 +1,6 @@
 package com.skillstorm.taxtracker.repositories;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +35,6 @@ public interface TaxReturnRepository extends CrudRepository<TaxReturn, Integer> 
 	Iterable<TaxReturn> findByClientId(int clientId);
 	
 	Iterable<TaxReturn> findByYear(int year);
+
+	Optional<TaxReturn> findByClientIdAndYear(int clientId, int year);
 }
