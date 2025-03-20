@@ -16,6 +16,10 @@ h2{
   text-align: center;
 }
 
+input {
+  font-size: 16px;
+}
+
 .main-content {
   margin-left: 174px;
   padding: 20px;
@@ -26,6 +30,7 @@ h2{
 table {
   width: 100%;
   border-collapse: collapse;
+  text-align: center;
 }
 
 thead {
@@ -43,13 +48,70 @@ tbody tr:nth-child(even) {
 
 th, td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
+}
+
+td img {
+  max-width: 100%;
+  max-height: 20px;
+  object-fit: contain;
 }
 
 tbody tr:hover {
   background-color: #e0e0e0;
 }
 
-button{
-  border-radius: 2%;
+button, input[type=submit]{
+  margin: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  padding: 5px 10px;
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 10%;
+  transition-duration: 0.4s;
+  border: 2px solid green;
+}
+
+button:hover, input[type=submit] {
+  background-color: rgb(247, 247, 247);
+  color: black;
+}
+
+.icon{
+  background: none; 
+  border: none; 
+}
+
+.icon:hover{
+  background: none;
+}
+
+.name-link {
+  background: none;
+  color: black;
+  border: none;
+  margin: none;
+}
+
+.name-link:hover {
+  background: none;
+  color: darkgreen;
+}
+
+p {
+  margin:16px;
+}
+
+.button-image{
+  max-height: 20px;
+  vertical-align: center;
+  display: inline;
+}
+
+h3{
+  color: darkgreen;
+  font-weight: bold;
 }

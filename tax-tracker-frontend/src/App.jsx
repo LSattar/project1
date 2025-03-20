@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header.tsx";
 import { Sidebar } from "./components/Sidebar.tsx";
 import { Clients } from "./pages/Clients.tsx";
+import { TaxReturns } from "./pages/TaxReturns.tsx";
+import { EmploymentSectors } from "./pages/EmploymentSectors.tsx";
+import { Payments } from "./pages/Payments.tsx";
 
 export default function App() {
   return (
@@ -13,8 +16,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<h2>Home</h2>} />
           <Route path="/clients" element={< Clients />} />
-          <Route path="/tax-returns" element={<h2>Tax Returns</h2>} />
-          <Route path="/payments" element={<h2>Payments</h2>} />
+          <Route path="/tax-returns" element={< TaxReturns />} />
+          <Route path="/employment-sectors" element={< EmploymentSectors />} />
+          <Route path="/payments" element={< Payments />} />
         </Routes>
         </div>
       </div>
