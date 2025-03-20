@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-h2{
+h2 {
   text-align: center;
 }
 
@@ -35,7 +35,7 @@ table {
 
 thead {
   background-color: rgb(126, 235, 126);
-  border-bottom: 2px solid black; 
+  border-bottom: 2px solid black;
 }
 
 tbody tr:nth-child(odd) {
@@ -43,10 +43,11 @@ tbody tr:nth-child(odd) {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f2f2f2; 
+  background-color: #f2f2f2;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: center;
 }
@@ -61,7 +62,8 @@ tbody tr:hover {
   background-color: #e0e0e0;
 }
 
-button, input[type=submit]{
+button,
+input[type=submit] {
   margin: 10px;
   margin-top: 10px;
   font-size: 16px;
@@ -75,17 +77,18 @@ button, input[type=submit]{
   border: 2px solid green;
 }
 
-button:hover, input[type=submit] {
+button:hover,
+input[type=submit] {
   background-color: rgb(247, 247, 247);
   color: black;
 }
 
-.icon{
-  background: none; 
-  border: none; 
+.icon {
+  background: none;
+  border: none;
 }
 
-.icon:hover{
+.icon:hover {
   background: none;
 }
 
@@ -102,16 +105,25 @@ button:hover, input[type=submit] {
 }
 
 p {
-  margin:16px;
+  margin: 16px;
 }
 
-.button-image{
+.button-image {
   max-height: 20px;
   vertical-align: center;
   display: inline;
 }
 
-h3{
+h3 {
   color: darkgreen;
   font-weight: bold;
+}
+
+.top-menu {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search {
+  display: flex;
 }

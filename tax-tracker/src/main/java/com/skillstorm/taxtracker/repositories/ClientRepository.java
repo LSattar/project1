@@ -11,6 +11,8 @@ public interface ClientRepository extends CrudRepository<Client, Integer> {
 	Iterable<Client> findByLastNameStartingWith(String startsWith);
 
 	boolean existsByEmploymentSectorId(int id);
+	
+	Iterable<Client> findByIsActiveTrue();
 
 	Optional<Client> findByHashedSsn(String hashedSsn);
 	

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import axios, { AxiosHeaders } from 'axios';
+import { useState, useEffect, useRef } from 'react';
 import { Client } from '../models/Client.ts';
 import React from 'react';
 import { ClientProfile } from '../components/ClientProfile.tsx';
@@ -12,9 +12,23 @@ export const Clients = () => {
     const [editingClientId, setEditingClientId] = useState<number | null>(null);
     const [isAddingClient, setIsAddingClient] = useState<boolean>(false);
 
-    const getAllClients = async () => {
+    let myHeaders: AxiosHeaders = new AxiosHeaders();
+    myHeaders.set('Content-Type', 'application/json');
+
+    useEffect(() => {
+        getAllClients();
+    }, []);
+
+    const getAllClients = async (event?: React.FormEvent) => {
+        if (event) event.preventDefault();
+
         try {
-            const response = await axios.get("http://localhost:8080/client");
+            const startsWithValue = startsWith.current.value.trim();
+            const response = await axios.get("http://localhost:8080/client", {
+                headers: myHeaders,
+                params: startsWithValue ? { startsWith: startsWithValue } : {}
+            });
+
             setClients(response.data.map((client: any) =>
                 new Client(
                     client.id, client.firstName, client.lastName,
@@ -31,6 +45,8 @@ export const Clients = () => {
     useEffect(() => {
         getAllClients();
     }, []);
+
+    const startsWith: any = useRef('');
 
     const addClientToList = (newClient: Client) => {
         setClients(prevClients => [...prevClients, newClient]);
@@ -64,7 +80,25 @@ export const Clients = () => {
     return (
         <main>
             <h1>Clients</h1>
-            <button onClick={() => setIsAddingClient(true)}>Add New Client</button>
+
+            <div className='top-menu'>
+                <form onSubmit={getAllClients}>
+                    <div className='search'>
+                        <label htmlFor="startsWith">Filter by Last Name: </label>
+                        <input
+                            type="text"
+                            id="startsWith"
+                            name="startsWith"
+                            ref={startsWith}
+                            onChange={getAllClients}
+                        />
+
+                    </div>
+                </form>
+
+                <button onClick={() => setIsAddingClient(true)}>Add New Client</button>
+            </div>
+
             <table>
                 <thead>
                     <tr>
@@ -144,4 +178,4 @@ export const Clients = () => {
             )}
         </main>
     );
-};
+}

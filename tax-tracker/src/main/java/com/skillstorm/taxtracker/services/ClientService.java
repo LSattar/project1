@@ -40,7 +40,7 @@ public class ClientService {
 
     // Find clients by last name
     public ResponseEntity<Iterable<Client>> findAll(String startsWith) {
-        Iterable<Client> clients = (startsWith == null) ? repo.findAll() 
+        Iterable<Client> clients = (startsWith == null) ? repo.findByIsActiveTrue() 
                                                         : repo.findByLastNameStartingWith(startsWith);
         return clients.iterator().hasNext() ? ResponseEntity.ok(clients) 
                                             : ResponseEntity.noContent().build();
