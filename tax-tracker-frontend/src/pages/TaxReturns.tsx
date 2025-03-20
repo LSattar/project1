@@ -5,35 +5,40 @@ import React from 'react';
 import { ClientProfile } from '../components/ClientProfile.tsx';
 import { TaxReturn } from '../models/TaxReturn.ts';
 import { Cpa } from '../models/Cpa.ts';
+import { TaxReturnProfile } from '../components/TaxReturnProfile.tsx';
+import { EditTaxReturn } from '../components/EditTaxReturn.tsx';
+import { NewTaxReturn } from '../components/NewTaxReturn.tsx';
 
 export const TaxReturns = () => {
-const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
+    const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
     const [selectedTaxReturnId, setSelectedTaxReturnId] = useState<number | null>(null);
+    const [editingTaxReturnId, setEditingTaxReturnId] = useState<number | null>(null);
+    const [addingTaxReturn, setAddingTaxReturn] = useState<boolean> (false);
+
+    const getAllTaxReturns = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/tax-return");
+            setTaxReturns(response.data.map((taxReturn: any) =>
+                new TaxReturn(
+                    taxReturn.id, taxReturn.client, taxReturn.cpa, taxReturn.year, taxReturn.status,
+                    taxReturn.amountPaid, taxReturn.amountOwed, taxReturn.cost, taxReturn.creationDate,
+                    taxReturn.updateDate, taxReturn.employmentSector, taxReturn.totalIncome, taxReturn.adjustments,
+                    taxReturn.filingStatus
+                )
+            ));
+        } catch (error) {
+            console.error("Error fetching tax returns:", error);
+        }
+    };
 
     useEffect(() => {
-        const getAllTaxReturns = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/tax-return");
-                setTaxReturns(response.data.map((taxReturn: any) => 
-                    new TaxReturn(
-                        taxReturn.id, taxReturn.client, taxReturn.cpa, taxReturn.year, taxReturn.status,
-                         taxReturn.amountPaid, taxReturn.amountOwed, taxReturn.cost, taxReturn.creationDate, 
-                         taxReturn. updateDate, taxReturn.employmentSector, taxReturn.totalIncome, taxReturn.adjustments, 
-                         taxReturn.filingStatus
-                    )
-                ));
-            } catch (error) {
-                console.error("Error fetching tax returns:", error);
-            }
-        };
-
         getAllTaxReturns();
     }, []);
 
     return (
         <main>
             <h1>Tax Returns</h1>
-            <button>Create New Tax Return</button>
+            <button onClick={() => setAddingTaxReturn(true)}>Create New Tax Return</button>
             <table>
                 <thead>
                     <tr>
@@ -52,15 +57,8 @@ const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
                         <tr key={taxReturn.id}>
                             <td>{taxReturn.id}</td>
                             <td>
-                                <button 
+                                <button
                                     onClick={() => setSelectedTaxReturnId(taxReturn.id)}
-                                    style={{ 
-                                        background: "none", 
-                                        border: "none", 
-                                        color: "blue", 
-                                        textDecoration: "underline", 
-                                        cursor: "pointer" 
-                                    }}
                                 >
                                     {taxReturn.client.firstName} {taxReturn.client.lastName}
                                 </button>
@@ -75,8 +73,46 @@ const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
                     ))}
                 </tbody>
             </table>
+            {selectedTaxReturnId && !editingTaxReturnId && !addingTaxReturn && (
+    <div className="main-content">
+        <div className="client-profile-overlay">
+            <div className="client-profile">
+                <TaxReturnProfile
+                    taxReturnId={selectedTaxReturnId}
+                    onClose={() => setSelectedTaxReturnId(null)}
+                    setEditingTaxReturnId={setEditingTaxReturnId}
+                />
+            </div>
+        </div>
+    </div>
+)}
 
+{editingTaxReturnId && !addingTaxReturn && (
+    <div className="main-content">
+        <div className="client-profile-overlay">
+            <div className="client-profile">                         
+                <EditTaxReturn
+                    taxReturn={taxReturns.find(t => t.id === editingTaxReturnId)!}
+                    updateTaxReturn={getAllTaxReturns}
+                    onCancel={() => setEditingTaxReturnId(null)}
+                />
+            </div>
+        </div>
+    </div>
+)}
 
+{addingTaxReturn && (
+    <div className="main-content">
+        <div className="client-profile-overlay">
+            <div className="client-profile">                         
+                <NewTaxReturn
+                    addTaxReturnToList={getAllTaxReturns}
+                    onCancel={() => setAddingTaxReturn(false)}
+                />
+            </div>
+        </div>
+    </div>
+)}
         </main>
     );
 };

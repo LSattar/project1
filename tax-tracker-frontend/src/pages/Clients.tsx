@@ -42,10 +42,6 @@ export const Clients = () => {
         }
     };
 
-    useEffect(() => {
-        getAllClients();
-    }, []);
-
     const startsWith: any = useRef('');
 
     const addClientToList = (newClient: Client) => {
@@ -84,7 +80,7 @@ export const Clients = () => {
             <div className='top-menu'>
                 <form onSubmit={getAllClients}>
                     <div className='search'>
-                        <label htmlFor="startsWith">Filter by Last Name: </label>
+                        <label htmlFor="startsWith">Search by Last Name: </label>
                         <input
                             type="text"
                             id="startsWith"
