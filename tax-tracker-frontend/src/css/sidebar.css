@@ -1,31 +1,35 @@
-/* The sidebar menu */
+.logo{
+  font-size: 1em;
+  font-weight: bold;
+  color: rgb(0, 63, 0);
+}
+
 .sidebar-content {
-    height: 100%; /* Full-height */
-    width: 160px; /* Set the width of the sidebar */
+    height: 100%; 
+    width: 160px; 
     font-size: 28px;
     padding: .5em;
-    position: fixed; /* Fixed Sidebar */
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
+    position: fixed; 
+    z-index: 1; 
+    top: 0; 
     left: 0;
-    background-color: #e4e4e4; /* Black */
-    overflow-x: hidden; /* Disable horizontal scroll */
+    background-color: #e4e4e4; 
+    overflow-x: hidden; 
     padding-top: 20px;
     text-align: left;
   }
   
-  /* The navigation menu links */
+
   .sidebar-content a {
     padding: 10px 16px;
     text-decoration: none;
     font-size: 16px;
     color: #000000;
-    display: block; /* Ensures the links stack vertically */
-    width: 100%; /* Makes links expand full width of sidebar */
+    display: block;
+    width: 100%;
     box-sizing: border-box;
   }
   
-  /* When you mouse over the navigation links, change their color */
   .sidebar-content a:hover {
     color: darkgreen;
   }

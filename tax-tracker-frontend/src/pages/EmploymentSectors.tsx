@@ -14,15 +14,15 @@ export const EmploymentSectors = () => {
     const startsWith: any = useRef('');
 
     const getAllEmploymentSectors = async (event?: React.FormEvent) => {
-        if (event) event.preventDefault(); 
+        if (event) event.preventDefault();
 
         try {
-            const startsWithValue = startsWith.current?.value?.trim() || ""; 
+            const startsWithValue = startsWith.current?.value?.trim() || "";
             const response = await axios.get("http://localhost:8080/employment-sector", {
-                params: startsWithValue ? { startsWith: startsWithValue } : {} 
+                params: startsWithValue ? { startsWith: startsWithValue } : {}
             });
 
-            setEmploymentSectors(response.data.map((sector: any) => 
+            setEmploymentSectors(response.data.map((sector: any) =>
                 new EmploymentSector(sector.id, sector.employmentSectorName)
             ));
         } catch (error) {
@@ -78,7 +78,7 @@ export const EmploymentSectors = () => {
     return (
         <main>
             <h1>Employment Sectors</h1>
-            
+
             <div className='top-menu'>
                 <form onSubmit={getAllEmploymentSectors}>
                     <div className='search'>
@@ -96,7 +96,7 @@ export const EmploymentSectors = () => {
                 <button onClick={() => setIsAdding(true)}>Add Employment Sector</button>
             </div>
 
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+            {errorMessage && <p className='error-message'>{errorMessage}</p>}
             <table>
                 <thead>
                     <tr>
@@ -112,20 +112,22 @@ export const EmploymentSectors = () => {
                             <td>{sector.id}</td>
                             <td>{sector.employmentSectorName}</td>
                             <td>
-                                <button 
-                                    className='icon' 
+                                <div className='button-container'>                                <button
+                                    className='icon'
                                     onClick={() => setSelectedEmploymentSectorId(sector.id)}
                                 >
                                     <img src="/images/pencil.png" alt="Edit" />
-                                </button>
+                                </button></div>
+
                             </td>
                             <td>
-                                <button 
-                                    className='icon' 
+                                <div className='button-container'>                                <button
+                                    className='icon'
                                     onClick={() => deleteEmploymentSector(sector.id)}
                                 >
                                     <img src="/images/trash-can.png" alt="Delete" width="20" height="20" />
-                                </button>
+                                </button></div>
+
                             </td>
                         </tr>
                     ))}
@@ -140,7 +142,7 @@ export const EmploymentSectors = () => {
                             onClose={() => setSelectedEmploymentSectorId(null)}
                             onSuccess={async () => {
                                 setSelectedEmploymentSectorId(null);
-                                await getAllEmploymentSectors(); 
+                                await getAllEmploymentSectors();
                             }}
                         />
                     </div>

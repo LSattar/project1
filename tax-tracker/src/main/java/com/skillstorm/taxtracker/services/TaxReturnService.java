@@ -138,7 +138,7 @@ public class TaxReturnService {
             if (cpa != null) {
                 int returnCount = repo.countByCpaIdAndYear(cpa.getId(), dto.year());
                 if (returnCount >= MAX_RETURNS_PER_CPA) {
-                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                             .header("X-Error-Message", "The CPA has reached the maximum allowed tax returns for this year.")
                             .body(null);
                 }

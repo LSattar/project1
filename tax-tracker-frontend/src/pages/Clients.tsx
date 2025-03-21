@@ -122,13 +122,13 @@ export const Clients = () => {
                             <td>{client.phone}</td>
                             <td>{client.city}</td>
                             <td>{client.state}</td>
-                            <td>
-                                <button
+                            <td> <div className='button-container'>                                <button
                                     className='icon'
                                     onClick={() => { console.log("set editing id: " + client.id); setEditingClientId(client.id) }}
                                 >
                                     <img src="/images/pencil.png" alt="Edit" />
-                                </button>
+                                </button></div>
+
                             </td>
                         </tr>
                     ))}
@@ -141,6 +141,7 @@ export const Clients = () => {
                         <ClientProfile
                             clientId={selectedClientId}
                             onClose={() => setSelectedClientId(null)}
+                            getAllClients={getAllClients}
                         />
                     </div>
                 </div>

@@ -99,8 +99,8 @@ export const EditClient = ({ client, updateClient, onCancel }: EditClientProps) 
                     <label>Zip: <input ref={editFormZip} defaultValue={client.zip} /></label>
 
                     <div className="profile-buttons">
-                        <button type="submit">Save</button>
-                        <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
+                        <button type="submit" className="button-save"><img src="/images/check.png"></img>Save</button>
+                        <button type="button" className="button-cancel" onClick={onCancel}><img src="/images/x.png"></img>Cancel</button>
                     </div>
                 </form>
             </div>

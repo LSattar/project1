@@ -108,7 +108,7 @@ export const EditTaxReturn = ({ taxReturn, updateTaxReturn, onCancel }: EditTaxR
     };
 
     return (
-        <div className="client-profile">
+        <div>
             <h2>Edit Tax Return</h2>
             <h3>Basic Info</h3>
             <form onSubmit={handleSubmit}>

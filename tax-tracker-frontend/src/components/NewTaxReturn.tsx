@@ -73,7 +73,7 @@ export const NewTaxReturn = ({ addTaxReturnToList, onCancel }: NewTaxReturnProps
         } catch (error) {
             if (error.response.status === 409) {
                 console.log("409 error")
-                setErrorMessage("Client already has for this year, please verify entry and try again")
+                setErrorMessage("Client already has a return for this year, please verify entry and try again")
             } else if (error.response.status === 422){
                 setErrorMessage("CPA has met their maximum returns for this year, please verify and try again")
             }
@@ -88,7 +88,7 @@ export const NewTaxReturn = ({ addTaxReturnToList, onCancel }: NewTaxReturnProps
         <div className="new-tax-return-form">
             <h2>Create New Tax Return</h2>
 
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+            {errorMessage && <p className = "error-message">{errorMessage}</p>}
 
             <form onSubmit={addTaxReturn}>
                 <label>Client:
@@ -122,13 +122,13 @@ export const NewTaxReturn = ({ addTaxReturnToList, onCancel }: NewTaxReturnProps
                     </select>
                 </label>
                 <label>Year: <input type="number" ref={inputYear} required min="1900" max="2100" /></label>
-                <label>Status: <input type="text" ref={inputStatus} required /></label>
-                <label>Amount Paid: <input type="number" ref={inputAmountPaid} step="0.01" /></label>
-                <label>Amount Owed: <input type="number" ref={inputAmountOwed} step="0.01" /></label>
-                <label>Cost: <input type="number" ref={inputCost} step="0.01" /></label>
                 <label>Total Income: <input type="number" ref={inputTotalIncome} step="0.01" /></label>
                 <label>Adjustments: <input type="number" ref={inputAdjustments} step="0.01" /></label>
                 <label>Filing Status: <input type="text" ref={inputFilingStatus} required /></label>
+                <label>Taxes Paid: <input type="number" ref={inputAmountPaid} step="0.01" /></label>
+                <label>Taxes Owed: <input type="number" ref={inputAmountOwed} step="0.01" /></label>
+                <label>Cost: <input type="number" ref={inputCost} step="0.01" /></label>
+                <label>Return Status: <input type="text" ref={inputStatus} required /></label>
                 <div className="profile-buttons">
                     <input type="submit" value="Submit" />
                     <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
