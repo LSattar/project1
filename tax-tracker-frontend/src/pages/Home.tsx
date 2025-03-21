@@ -6,8 +6,10 @@ export default  function Home() {
     return (
       <div>
         <h1>Welcome to Tax Tracker!</h1>
+        <div className = "center">
         <p>This platform helps you manage clients, track returns, and monitor payment history... all in one place!</p>
         <p><strong>What would you like to do today?</strong></p>
+        </div>
         <hr></hr>
 
 <div className = "container">

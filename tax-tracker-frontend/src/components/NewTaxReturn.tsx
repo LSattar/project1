@@ -74,7 +74,7 @@ export const NewTaxReturn = ({ addTaxReturnToList, onCancel }: NewTaxReturnProps
             if (error.response.status === 409) {
                 console.log("409 error")
                 setErrorMessage("Client already has a return for this year, please verify entry and try again")
-            } else if (error.response.status === 422){
+            } else if (error.response.status === 406){
                 setErrorMessage("CPA has met their maximum returns for this year, please verify and try again")
             }
             else{

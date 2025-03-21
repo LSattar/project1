@@ -78,7 +78,7 @@ export const EditEmploymentSector = ({ employmentSectorId, onClose, onSuccess }:
                 
                 <div className="profile-buttons">
                     <button type="submit" className="button-save"><img src="/images/check.png"></img>Submit</button>
-                    <button type="button" className= "button-cancel" onClick={onClose}><img src= "/images/no.png"></img>Cancel</button>
+                    <button type="button" className= "button-cancel" onClick={onClose}><img src= "/images/x.png"></img>Cancel</button>
                 </div>
             </form>
         </div>

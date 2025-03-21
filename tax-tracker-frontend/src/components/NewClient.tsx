@@ -151,7 +151,7 @@ export const NewClient = ({ addClientToList, onCancel }: { addClientToList: (new
                 <label>Last Name: <input required type="text" ref={addFormLastName} /></label>
                 <label>DOB: <input required type="date" ref={addFormDob} /></label>
                 <label>SSN: <input required type="text" ref={addFormSsn} /></label>
-                {ssnMessage && <p>{ssnMessage}</p>}
+                {ssnMessage && <p className='error-message'>{ssnMessage}</p>}
                 <label>Employment Sector: 
                     <select ref={addFormEmploymentSector}>
                         <option value="" disabled>Select Employment Sector</option>
@@ -172,8 +172,8 @@ export const NewClient = ({ addClientToList, onCancel }: { addClientToList: (new
                 <label>Zip: <input required type="text" ref={addFormZip} /></label>
                 {errorMessage && <p>{errorMessage}</p>}
                 <div className="profile-buttons">
-                    <input type="submit" value={'Submit'} />
-                    <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="button-save"><img src="/images/check.png"></img>Submit</button>
+                <button type="button" className="button-cancel" onClick={onCancel}><img src="/images/x.png"></img>Cancel</button>
                 </div>
             </form>
         </div>

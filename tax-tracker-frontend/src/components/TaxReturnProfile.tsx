@@ -102,8 +102,8 @@ export const TaxReturnProfile = ({ taxReturnId, onClose }: TaxReturnProfileProps
 
                     <div className="profile-buttons">
                         <button className="button-update" onClick={() => setIsEditing(true)}> <img className="button-image" src="/images/pencil-white.png" alt="Edit" />Edit</button>
-                        <button className="button-close" onClick={onClose}>Close</button>
-                        <button className="button-delete">Delete</button>
+                        <button className="button-save" onClick={onClose}><img className="button-image" src="/images/x.png" alt="Edit" />Close</button>
+                        <button className="button-cancel"><img className="button-image" src="/images/trash-can-white.png" alt="Edit" />Delete</button>
                     </div>
                 </>
             )}

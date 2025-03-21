@@ -5,12 +5,13 @@
     height: 100%
   }
 
-  p{
-    text-align: center;
-  }
+.center{
+  text-align: center;
+  padding-bottom: 25px;
+}
 
   .container{
-    padding: 45px;
+    padding: 10px;
     padding-left: 100px;
     padding-right: 100px;
   }
