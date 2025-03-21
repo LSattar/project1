@@ -130,8 +130,8 @@ export const NewTaxReturn = ({ addTaxReturnToList, onCancel }: NewTaxReturnProps
                 <label>Cost: <input type="number" ref={inputCost} step="0.01" /></label>
                 <label>Return Status: <input type="text" ref={inputStatus} required /></label>
                 <div className="profile-buttons">
-                    <input type="submit" value="Submit" />
-                    <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="button-save"><img src="/images/check.png"></img>Submit</button>
+                <button type="button" className= "button-cancel" onClick={onCancel}><img src= "/images/no.png"></img>Cancel</button>
                 </div>
             </form>
         </div>

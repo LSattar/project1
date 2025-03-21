@@ -1,0 +1,42 @@
+
+.home-image{
+    max-height: 200px;
+    width: 100%;
+    height: 100%
+  }
+
+  p{
+    text-align: center;
+  }
+
+  .container{
+    padding: 45px;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+
+  .home-column{
+    padding:50px;
+    border: 2px solid darkgreen;
+    border-radius: 5%;
+    background-color: rgb(241, 241, 241);
+  }
+
+
+a:hover{
+    color:green;
+}
+
+a {
+    padding: 10px 16px;
+    text-decoration: none;
+    font-size: 22px;
+    color: #000000;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+h1, strong{
+    color: rgb(0, 63, 0);
+}

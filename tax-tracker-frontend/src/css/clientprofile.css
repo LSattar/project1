@@ -60,6 +60,30 @@
     opacity: .6;
 }
 
+.button-warning{
+    background-color:  rgb(202, 182, 0);
+    border-color: rgb(202, 182, 0);
+}
+
+.button-warning:hover{
+    color: white;
+    background-color:rgb(202, 182, 0);
+    border-color: rgb(202, 182, 0);
+    opacity: .6;
+}
+
+.button-update{
+    background-color:  blue;
+    border-color: blue;
+}
+
+.button-update:hover{
+    color: white;
+    background-color: blue;
+    border-color: blue;
+    opacity: .6;
+}
+
 .hidden {
     visibility: hidden;
     color: blue;

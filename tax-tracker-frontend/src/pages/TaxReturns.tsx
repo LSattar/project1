@@ -175,13 +175,15 @@ export const TaxReturns = () => {
                         <tr key={taxReturn.id}>
                             <td>{taxReturn.id}</td>
                             <td>
-                                <button className='name-link'
+                                <div className='button-container'>                                
+                                    <button className='name-link'
                                     onClick={() => setSelectedTaxReturnId(taxReturn.id)}
                                 >
                                     {taxReturn.client.firstName == null
                                         ? "[INACTIVE]"
                                         : `${taxReturn.client.firstName} ${taxReturn.client.lastName}`} - {taxReturn.year}
-                                </button>
+                                </button></div>
+
                             </td>
                             <td>${taxReturn.amountOwed.toFixed(2)}</td>
                             <td>${taxReturn.amountPaid.toFixed(2)}</td>

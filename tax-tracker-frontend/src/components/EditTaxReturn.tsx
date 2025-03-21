@@ -140,8 +140,8 @@ export const EditTaxReturn = ({ taxReturn, updateTaxReturn, onCancel }: EditTaxR
                     </select>
                 </label>
                 <div className="profile-buttons">
-                    <button type="submit">Save</button>
-                    <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="button-save"><img src="/images/check.png"></img>Submit</button>
+                <button type="button" className= "button-cancel" onClick={onCancel}><img src= "/images/no.png"></img>Cancel</button>
                 </div>
             </form>
         </div>

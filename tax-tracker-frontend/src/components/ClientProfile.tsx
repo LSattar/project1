@@ -117,8 +117,8 @@ export const ClientProfile = ({ clientId, onClose, getAllClients }: ClientProfil
 
                     <div className="profile-buttons">
                         <button className="button-update" onClick={() => setIsEditing(true)}><img className = "button-image" src = "/images/pencil-white.png"></img> Edit </button>
-                        <button className="button-close" onClick={onClose}><img className = "button-image" src= "/images/x.png"></img>Close </button>
-                        <button className="button-close" onClick={() => deactivateClient(client)}><img className = "button-image" src= "/images/no.png"></img>Deactivate</button>
+                        <button className="button-cancel" onClick={onClose}><img className = "button-image" src= "/images/x.png"></img>Close </button>
+                        <button className="button-warning" onClick={() => deactivateClient(client)}><img className = "button-image" src= "/images/no.png"></img>Deactivate</button>
                     </div>
                 </>
             )}

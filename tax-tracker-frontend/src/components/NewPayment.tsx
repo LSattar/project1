@@ -95,8 +95,8 @@ export const NewPayment = ({ addPaymentToList, onCancel }: { addPaymentToList: (
                 </label>
                 {errorMessage && <p>{errorMessage}</p>}
                 <div className="profile-buttons">
-                    <input type="submit" value={'Submit'} />
-                    <button type="button" className="button-cancel" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="button-save"><img src="/images/check.png"></img>Submit</button>
+                <button type="button" className= "button-cancel" onClick={onCancel}><img src= "/images/no.png"></img>Cancel</button>
                 </div>
             </form>
         </div>

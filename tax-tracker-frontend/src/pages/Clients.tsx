@@ -112,22 +112,23 @@ export const Clients = () => {
                         <tr key={client.id}>
                             <td>{client.id}</td>
                             <td>
-                                <button className="name-link"
+                                <div className='button-container'>                                <button className="name-link"
                                     onClick={() => setSelectedClientId(client.id)}
                                 >
                                     {client.firstName} {client.lastName}
-                                </button>
+                                </button></div>
+
                             </td>
                             <td>{client.email}</td>
                             <td>{client.phone}</td>
                             <td>{client.city}</td>
                             <td>{client.state}</td>
                             <td> <div className='button-container'>                                <button
-                                    className='icon'
-                                    onClick={() => { console.log("set editing id: " + client.id); setEditingClientId(client.id) }}
-                                >
-                                    <img src="/images/pencil.png" alt="Edit" />
-                                </button></div>
+                                className='icon'
+                                onClick={() => { console.log("set editing id: " + client.id); setEditingClientId(client.id) }}
+                            >
+                                <img src="/images/pencil.png" alt="Edit" />
+                            </button></div>
 
                             </td>
                         </tr>

@@ -27,7 +27,6 @@ export const EmploymentSectors = () => {
             ));
         } catch (error) {
             console.error("Error fetching employment sectors:", error);
-            setErrorMessage("Failed to fetch employment sectors.");
         }
     };
 
