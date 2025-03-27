@@ -86,7 +86,7 @@ export const ClientProfile = ({ clientId, onClose, getAllClients }: ClientProfil
                 <EditClient client={client} updateClient={updateClient} onCancel={() => setIsEditing(false)} />
             ) : (
                 <>
-                                    <h2>Client Profile</h2>
+                <h2>Client Profile</h2>
                 <div className="container">
                     
                     <div className = "column">

@@ -6,7 +6,7 @@ import { Capitalize } from "../Capitalize.ts";
 
 interface NewEmploymentSectorProps {
     onCancel: () => void;
-    onSuccess: () => void; // Callback to refresh list after adding
+    onSuccess: () => void;
 }
 
 export const NewEmploymentSector = ({ onCancel, onSuccess }: NewEmploymentSectorProps) => {

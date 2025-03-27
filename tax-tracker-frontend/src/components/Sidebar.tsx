@@ -8,7 +8,6 @@ export const Sidebar = () => {
         <div className="sidebar-content">
           <span className="logo">Tax Tracker</span>
           { 
-          // <span className="slogan"><em>Making your accounting less taxing</em></span> 
           }
         <NavBar />
         </div>
